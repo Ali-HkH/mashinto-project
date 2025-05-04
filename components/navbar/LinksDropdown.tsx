@@ -1,9 +1,38 @@
-import React from 'react'
+import {
+   DropdownMenu,
+   DropdownMenuContent,
+   DropdownMenuItem,
+   DropdownMenuTrigger,
+   DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { LuAlignLeft } from "react-icons/lu";
+import Link from "next/link";
+import { Button } from "../ui/button";
+import UserIcon from "./UserIcon";
+import { links } from "@/utils/links";
+import SignOutLink from "./SignOutLink";
 
 function LinksDropdown() {
-  return (
-    <div>LinksDropdown</div>
-  )
+   return (
+      <DropdownMenu>
+         <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="flex gap-4 max-w-[100px]">
+               <LuAlignLeft style={{width: "20px", height: "20px"}} />
+               <UserIcon />
+            </Button>
+         </DropdownMenuTrigger>
+         <DropdownMenuContent className="w-52" align="start" sideOffset={10}>
+            {links.map((link) => {
+               return (
+                  <DropdownMenuItem key={link.href}>
+                     <Link href={link.href} className="w-full flex justify-end">
+                        <span>{link.label}</span>
+                     </Link>
+                  </DropdownMenuItem>
+               );
+            })}
+         </DropdownMenuContent>
+      </DropdownMenu>
+   );
 }
-
-export default LinksDropdown
+export default LinksDropdown;
