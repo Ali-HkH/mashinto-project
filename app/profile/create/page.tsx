@@ -1,13 +1,7 @@
 import FormInput from '@/components/form/FormInput';
 import { SubmitButton } from '@/components/form/Buttons';
 import FormContainer from '@/components/form/FormContainer';
-
-const createProfileAction = async (prevState: any, formData: FormData) => {
-  'use server';
-  const firstName = formData.get('firstName') as string;
-  if (firstName !== 'shakeAndBake') return { message: 'به یک مشکل برخوردیم' };
-  return { message: 'نمایه ایجاد شد' };
-};
+import { createProfileAction } from '@/utils/actions';
 
 function CreateProfile() {
   return (
@@ -20,7 +14,7 @@ function CreateProfile() {
             <FormInput type='text' name='lastName' label='نام خانوادگی' />
             <FormInput type='text' name='username' label='نام کاربری' />
           </div>
-          <SubmitButton text='Create Profile' className='mt-8' />
+          <SubmitButton text='ایجاد نمایه' className='mt-8' />
         </FormContainer>
       </div>
     </section>

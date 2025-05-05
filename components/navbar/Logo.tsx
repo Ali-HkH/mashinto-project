@@ -5,11 +5,15 @@ import { BsFillCarFrontFill } from "react-icons/bs";
 
 function Logo() {
   return (
-    <Button size='icon' asChild>
+    <div className='text-2xl flex items-center gap-2'>
+    <Button size='sm' asChild>
       <Link href='/'>
-        <BsFillCarFrontFill style={{width: "25px", height: "25px"}}/>
+        <BsFillCarFrontFill style={{width: "30px", height: "30px"}}/>
       </Link>
     </Button>
+      <h1 className='font-bold text-primary'>ماشینتو</h1>
+    </div>
+    
   )
 }
 
