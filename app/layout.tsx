@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Providers from "./Providers";
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
    title: "ماشینتو،  پلتفرم اجاره خودرو",
@@ -36,13 +37,15 @@ export default function RootLayout({
    children: React.ReactNode;
 }>) {
    return (
-      <html lang="fa" dir="rtl" suppressHydrationWarning>
-         <body className={dana.className}>
-            <Providers>
-               <Navbar />
-               <main className="container py-10">{children}</main>
-            </Providers>
-         </body>
-      </html>
+      <ClerkProvider>
+         <html lang="fa" dir="rtl" suppressHydrationWarning>
+            <body className={dana.className}>
+               <Providers>
+                  <Navbar />
+                  <main className="container py-10">{children}</main>
+               </Providers>
+            </body>
+         </html>
+      </ClerkProvider>
    );
 }
