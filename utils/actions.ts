@@ -1,18 +1,110 @@
-'use server';
+"use server";
 
-import { profileSchema } from './schemas';
+import db from "./db";
+import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { profileSchema } from "./schemas";
+
+const getAuthUser = async () => {
+  const user = await currentUser();
+  if (!user) {
+    throw new Error('برای ساخت پروفایل ابتدا لاگین کنید');
+  }
+  if (!user.privateMetadata.hasProfile) redirect('/profile/create');
+  return user;
+};
+
+const renderError = (error: unknown): { message: string } => {
+  console.log(error);
+  return {
+    message: error instanceof Error ? error.message : 'یه خطایی روی داده است',
+  };
+};
 
 export const createProfileAction = async (
+   prevState: any,
+   formData: FormData
+) => {
+   try {
+      const user = await currentUser();
+      if (!user) throw new Error("برای ساخت پروفایل ابتدا لاگین کنید");
+
+      const rawData = Object.fromEntries(formData);
+      const validatedFields = profileSchema.parse(rawData);
+
+      await db.profile.create({
+         data: {
+            clerkId: user.id,
+            email: user.emailAddresses[0].emailAddress,
+            profileImage: user.imageUrl ?? "",
+            ...validatedFields,
+         },
+      });
+      const client = await clerkClient();
+      await client.users.updateUserMetadata(user.id, {
+         privateMetadata: {
+            hasProfile: true,
+         },
+      });
+   } catch (error) {
+      return {
+         message: error instanceof Error ? error.message : "خطایی روی داده است",
+      };
+   }
+   redirect("/");
+};
+
+export const fetchProfileImage = async () => {
+   const user = await currentUser();
+   if (!user) return null;
+
+   const profile = await db.profile.findUnique({
+      where: {
+         clerkId: user.id,
+      },
+      select: {
+         profileImage: true,
+      },
+   });
+   return profile?.profileImage;
+};
+
+export const fetchProfile = async () => {
+  const user = await getAuthUser();
+
+  const profile = await db.profile.findUnique({
+    where: {
+      clerkId: user.id,
+    },
+  });
+  if (!profile) return redirect('/profile/create');
+  return profile;
+};
+
+export const updateProfileAction = async (
   prevState: any,
   formData: FormData
-) => {
+): Promise<{ message: string }> => {
+  const user = await getAuthUser();
   try {
     const rawData = Object.fromEntries(formData);
-    const validatedFields = profileSchema.parse(rawData);
-    console.log(validatedFields);
-    return { message: 'نمایه ایجاد شد' };
+    const validatedFields = profileSchema.safeParse(rawData);
+
+    if (!validatedFields.success) {
+      const errors = validatedFields.error.errors.map((error) => error.message);
+      throw new Error(errors.join(' ,'));
+    }
+
+    await db.profile.update({
+      where: {
+        clerkId: user.id,
+      },
+      data: validatedFields,
+    });
+    revalidatePath('/profile');
+    return { message: 'نمایه شما بروزرسانی شد' };
   } catch (error) {
-    console.log(error);
-    return { message: 'خطایی روی داده است' };
+    return renderError(error)
   }
 };
