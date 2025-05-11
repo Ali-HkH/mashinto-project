@@ -4,22 +4,23 @@ import db from "./db";
 import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { profileSchema } from "./schemas";
+import { imageSchema, profileSchema, validateWithZodSchema } from "./schemas";
+import { uploadImage } from "./supabase";
 
 const getAuthUser = async () => {
-  const user = await currentUser();
-  if (!user) {
-    throw new Error('برای ساخت پروفایل ابتدا لاگین کنید');
-  }
-  if (!user.privateMetadata.hasProfile) redirect('/profile/create');
-  return user;
+   const user = await currentUser();
+   if (!user) {
+      throw new Error("برای ساخت پروفایل ابتدا لاگین کنید");
+   }
+   if (!user.privateMetadata.hasProfile) redirect("/profile/create");
+   return user;
 };
 
 const renderError = (error: unknown): { message: string } => {
-  console.log(error);
-  return {
-    message: error instanceof Error ? error.message : 'یه خطایی روی داده است',
-  };
+   console.log(error);
+   return {
+      message: error instanceof Error ? error.message : "یه خطایی روی داده است",
+   };
 };
 
 export const createProfileAction = async (
@@ -31,8 +32,7 @@ export const createProfileAction = async (
       if (!user) throw new Error("برای ساخت پروفایل ابتدا لاگین کنید");
 
       const rawData = Object.fromEntries(formData);
-      const validatedFields = profileSchema.parse(rawData);
-
+      const validatedFields = validateWithZodSchema(profileSchema, rawData);
       await db.profile.create({
          data: {
             clerkId: user.id,
@@ -48,9 +48,7 @@ export const createProfileAction = async (
          },
       });
    } catch (error) {
-      return {
-         message: error instanceof Error ? error.message : "خطایی روی داده است",
-      };
+      return renderError(error);
    }
    redirect("/");
 };
@@ -71,40 +69,60 @@ export const fetchProfileImage = async () => {
 };
 
 export const fetchProfile = async () => {
-  const user = await getAuthUser();
+   const user = await getAuthUser();
 
-  const profile = await db.profile.findUnique({
-    where: {
-      clerkId: user.id,
-    },
-  });
-  if (!profile) return redirect('/profile/create');
-  return profile;
+   const profile = await db.profile.findUnique({
+      where: {
+         clerkId: user.id,
+      },
+   });
+   if (!profile) return redirect("/profile/create");
+   return profile;
 };
 
 export const updateProfileAction = async (
-  prevState: any,
-  formData: FormData
+   prevState: any,
+   formData: FormData
 ): Promise<{ message: string }> => {
-  const user = await getAuthUser();
-  try {
-    const rawData = Object.fromEntries(formData);
-    const validatedFields = profileSchema.safeParse(rawData);
+   const user = await getAuthUser();
+   try {
+      const rawData = Object.fromEntries(formData);
+      const validatedFields = validateWithZodSchema(profileSchema, rawData);
 
-    if (!validatedFields.success) {
-      const errors = validatedFields.error.errors.map((error) => error.message);
-      throw new Error(errors.join(' ,'));
-    }
+      await db.profile.update({
+         where: {
+            clerkId: user.id,
+         },
+         data: validatedFields,
+      });
+      revalidatePath("/profile");
+      return { message: "نمایه شما بروز رسانی شد" };
+   } catch (error) {
+      return renderError(error);
+   }
+};
 
-    await db.profile.update({
-      where: {
-        clerkId: user.id,
-      },
-      data: validatedFields,
-    });
-    revalidatePath('/profile');
-    return { message: 'نمایه شما بروزرسانی شد' };
-  } catch (error) {
-    return renderError(error)
-  }
+export const updateProfileImageAction = async (
+   prevState: any,
+   formData: FormData
+): Promise<{ message: string }> => {
+   const user = await getAuthUser();
+   try {
+      const image = formData.get("image") as File;
+      const validatedFields = validateWithZodSchema(imageSchema, { image });
+      const fullPath = await uploadImage(validatedFields.image);
+
+      await db.profile.update({
+         where: {
+            clerkId: user.id,
+         },
+         data: {
+            profileImage: fullPath,
+         },
+      });
+      revalidatePath("/profile");
+      return { message: "عکس نمایه بروزرسانی شد" };
+   } catch (error) {
+      return renderError(error);
+   }
 };
