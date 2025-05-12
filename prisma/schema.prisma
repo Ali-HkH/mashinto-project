@@ -18,5 +18,30 @@ model Profile {
   profileImage String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  cars         Car[]
 
+}
+
+model Car {
+  id             String    @id @default(uuid())
+  company        String    
+  model          String    
+  color          String
+  year           Int       
+  category       String    
+  image          String    
+  city           String
+  tagline        String
+  description    String    
+  price          Int       
+  seats          Int       
+  doors          Int       
+  transmission   String    
+  fuelType       String     
+  kilometer      Int       
+  amenities      String    
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  profile        Profile   @relation(fields: [profileId], references: [clerkId], onDelete: Cascade)
+  profileId      String
 }

@@ -43,3 +43,67 @@ function validateFile() {
          { message: "فایل باید فرمت عکس داشته باشد" }
       );
 }
+
+export const carSchema = z.object({
+   company: z
+      .string()
+      .min(2, {
+         message: "شرکت حداقل باید شامل 2 حرف باشد",
+      })
+      .max(20, {
+         message: "شرکت حداکثر باید شامل 20 حرف باشد",
+      }),
+   model: z
+      .string()
+      .min(2, {
+         message: "مدل حداقل باید شامل 2 حرف باشد",
+      })
+      .max(20, {
+         message: "مدل حداکثر باید شامل 20 حرف باشد",
+      }),
+   tagline: z
+      .string()
+      .min(5, {
+         message: "شعار حداقل باید شامل 5 حرف باشد",
+      })
+      .max(100, {
+         message: "شعار حداکثر باید شامل 100 حرف باشد",
+      }),
+   description: z.string().refine(
+      (description) => {
+         const wordCount = description.split(" ").length;
+         return wordCount >= 10 && wordCount <= 500;
+      },
+      {
+         message: "توصیف باید بین 10 تا 500 کلمه باشد",
+      }
+   ),
+   color: z
+   .string()
+   .min(5, {
+      message: "رنگ حداقل باید شامل 5 حرف باشد",
+   })
+   .max(15, {
+      message: "رنگ حداکثر باید شامل 15 حرف باشد",
+   }),
+   category: z.string(),
+   city: z.string(),
+   transmission: z.string(),
+   fuelType: z.string(),
+   year: z.coerce.number().int().min(0, {
+      message: "سال ساخت باید عددی مثبت باشد",
+   }),
+   price: z.coerce.number().int().min(0, {
+      message: "مبلغ باید عددی مثبت باشد",
+   }),
+   kilometer: z.coerce.number().int().min(0, {
+      message: "کیلومتر کارکرد باید عددی مثبت باشد",
+   }),
+   seats: z.coerce.number().int().min(0, {
+      message: "تعداد صندلی  باید عددی مثبت باشد",
+   }),
+   doors: z.coerce.number().int().min(0, {
+      message: "تعداد در باید عددی مثبت باشد",
+   }),
+   amenities: z.string(),
+});
