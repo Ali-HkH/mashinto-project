@@ -30,7 +30,7 @@ export const imageSchema = z.object({
 
 function validateFile() {
    const maxUploadSize = 3 * 1024 * 1024;
-   const acceptedFileTypes = ["image/"];
+   const acceptedFileTypes = ["image/jpeg", "image/png", "image/webp"];
    return z
       .instanceof(File)
       .refine((file) => !file || file.size <= maxUploadSize, {
@@ -79,13 +79,13 @@ export const carSchema = z.object({
       }
    ),
    color: z
-   .string()
-   .min(5, {
-      message: "رنگ حداقل باید شامل 5 حرف باشد",
-   })
-   .max(15, {
-      message: "رنگ حداکثر باید شامل 15 حرف باشد",
-   }),
+      .string()
+      .min(5, {
+         message: "رنگ حداقل باید شامل 5 حرف باشد",
+      })
+      .max(15, {
+         message: "رنگ حداکثر باید شامل 15 حرف باشد",
+      }),
    category: z.string(),
    city: z.string(),
    transmission: z.string(),
@@ -105,5 +105,4 @@ export const carSchema = z.object({
    doors: z.coerce.number().int().min(0, {
       message: "تعداد در باید عددی مثبت باشد",
    }),
-   amenities: z.string(),
 });

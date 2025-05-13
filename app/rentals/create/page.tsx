@@ -1,6 +1,5 @@
 import FormInput from "@/components/form/FormInput";
 import FormContainer from "@/components/form/FormContainer";
-import { createPropertyAction } from "@/utils/actions";
 import { SubmitButton } from "@/components/form/Buttons";
 import CategoriesInput from "@/components/form/CategoriesInput";
 import TextAreaInput from "@/components/form/TextAreaInput";
@@ -8,6 +7,9 @@ import TransmissionInput from "@/components/form/TransmissionInput";
 import FuelTypeInput from "@/components/form/FuelTypeInput";
 import NumberInput from "@/components/form/NumberInput";
 import CitiesInput from "@/components/form/CitiesInput";
+import CounterInput from "@/components/form/CounterInput";
+import ImageInput from "@/components/form/ImageInput";
+import { createRentalCarAction } from "@/utils/actions";
 
 function CreateCarRental() {
    return (
@@ -15,7 +17,7 @@ function CreateCarRental() {
          <h1 className="text-2xl font-semibold mb-8">ساخت خودرو اجاره ای</h1>
          <div className="border p-8 rounded-md">
             <h3 className="text-lg mb-4 font-medium">اطلاعات کلی</h3>
-            <FormContainer action={createPropertyAction}>
+            <FormContainer action={createRentalCarAction}>
                <div className="grid md:grid-cols-2 gap-8 mb-8">
                   <FormInput
                      name="company"
@@ -40,7 +42,7 @@ function CreateCarRental() {
                      defaultValue={30000}
                   />
                   <FormInput
-                     name="city"
+                     name="color"
                      type="text "
                      label="رنگ (15 حرف)"
                      defaultValue="مشکی متالیک"
@@ -50,13 +52,15 @@ function CreateCarRental() {
                      label="مبلغ(تومان)"
                      defaultValue={500000}
                   />
+                  <FormInput
+                     name="tagline"
+                     type="text "
+                     label="شعار (30حرف)"
+                     defaultValue="راه تو را می خواند!"
+                  />
+                  <ImageInput />
                </div>
-               <FormInput
-                  name="tagline"
-                  type="text "
-                  label="شعار (30حرف)"
-                  defaultValue="راه تو را می خواند!"
-               />
+
                <TextAreaInput
                   name="description"
                   labelText="توضیحات (10 تا 1000 کلمه)"
@@ -66,6 +70,8 @@ function CreateCarRental() {
                   <TransmissionInput />
                   <FuelTypeInput />
                   <CitiesInput />
+                  <CounterInput detail="سرنشین" name="seats" />
+                  <CounterInput detail="در" name="doors" />
                </div>
                <SubmitButton text="ایجاد اجاره" className="mt-12" />
             </FormContainer>

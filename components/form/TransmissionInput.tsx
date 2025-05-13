@@ -23,7 +23,11 @@ function TransmissionInput({ defaultValue }: { defaultValue?: string }) {
                <SelectItem value="گیربکس دستی">
                   <span className="flex items-center gap-2">
                      <NounManualTransmission
-                        style={{ width: "30px", height: "30px", color: "#408BFF"}}
+                        style={{
+                           width: "30px",
+                           height: "30px",
+                           color: "#408BFF",
+                        }}
                      />
                      گیربکس دستی
                   </span>
@@ -31,7 +35,11 @@ function TransmissionInput({ defaultValue }: { defaultValue?: string }) {
                <SelectItem value="گیربکس اتومات">
                   <span className="flex items-center gap-2">
                      <NounAutoTransmission
-                        style={{ width: "30px", height: "30px", color: "#408BFF"}}
+                        style={{
+                           width: "30px",
+                           height: "30px",
+                           color: "#408BFF",
+                        }}
                      />
                      گیربکس اتومات
                   </span>

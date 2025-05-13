@@ -9,7 +9,7 @@ type TextAreaInputProps = {
 
 function TextAreaInput({ name, labelText, defaultValue }: TextAreaInputProps) {
    return (
-      <div className="my-8">
+      <div className="mb-8">
          <Label htmlFor={name} className="mb-1">
             {labelText || name}
          </Label>

@@ -1,7 +1,7 @@
 "use server";
 
 import db from "./db";
-import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { carSchema, imageSchema, profileSchema, validateWithZodSchema } from "./schemas";
@@ -19,7 +19,7 @@ const getAuthUser = async () => {
 const renderError = (error: unknown): { message: string } => {
    console.log(error);
    return {
-      message: error instanceof Error ? error.message : "یه خطایی روی داده است",
+      message: error instanceof Error ? error.message : "خطایی روی داده است",
    };
 };
 
@@ -127,14 +127,26 @@ export const updateProfileImageAction = async (
    }
 };
 
-export const createPropertyAction = async (
+export const createRentalCarAction = async (
   prevState: any,
   formData: FormData
 ): Promise<{ message: string }> => {
   const user = await getAuthUser();
   try {
     const rawData = Object.fromEntries(formData);
+    const file = formData.get('image') as File;
+
     const validatedFields = validateWithZodSchema(carSchema, rawData);
+    const validatedFile = validateWithZodSchema(imageSchema, { image: file });
+    const fullPath = await uploadImage(validatedFile.image);
+
+    await db.car.create({
+      data: {
+        ...validatedFields,
+        image: fullPath,
+        profileId: user.id,
+      },
+    });
   } catch (error) {
     return renderError(error);
   }
