@@ -1,9 +1,26 @@
+import CategoriesList from "@/components/home/CategoriesList";
+import CarsContainer from "@/components/home/CarsContainer";
+import LoadingCards from "@/components/card/LoadingCards";
+import { Suspense } from "react";
 
-function HomePage() {
+function HomePage({
+   searchParams,
+}: {
+   searchParams: { category?: string; search?: string };
+}) {
    return (
-      <div className="flex gap-8">
-         <span className="text-4xl">صفحه اصلی</span>
-      </div>
+      <section>
+         <CategoriesList
+            category={searchParams?.category}
+            search={searchParams?.search}
+         />
+         <Suspense fallback={<LoadingCards />}>
+            <CarsContainer
+               category={searchParams?.category}
+               search={searchParams?.search}
+            />
+         </Suspense>
+      </section>
    );
 }
 

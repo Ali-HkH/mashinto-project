@@ -4,7 +4,12 @@ import db from "./db";
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { carSchema, imageSchema, profileSchema, validateWithZodSchema } from "./schemas";
+import {
+   carSchema,
+   imageSchema,
+   profileSchema,
+   validateWithZodSchema,
+} from "./schemas";
 import { uploadImage } from "./supabase";
 
 const getAuthUser = async () => {
@@ -128,27 +133,55 @@ export const updateProfileImageAction = async (
 };
 
 export const createRentalCarAction = async (
-  prevState: any,
-  formData: FormData
+   prevState: any,
+   formData: FormData
 ): Promise<{ message: string }> => {
-  const user = await getAuthUser();
-  try {
-    const rawData = Object.fromEntries(formData);
-    const file = formData.get('image') as File;
+   const user = await getAuthUser();
+   try {
+      const rawData = Object.fromEntries(formData);
+      const file = formData.get("image") as File;
 
-    const validatedFields = validateWithZodSchema(carSchema, rawData);
-    const validatedFile = validateWithZodSchema(imageSchema, { image: file });
-    const fullPath = await uploadImage(validatedFile.image);
+      const validatedFields = validateWithZodSchema(carSchema, rawData);
+      const validatedFile = validateWithZodSchema(imageSchema, { image: file });
+      const fullPath = await uploadImage(validatedFile.image);
 
-    await db.car.create({
-      data: {
-        ...validatedFields,
-        image: fullPath,
-        profileId: user.id,
+      await db.car.create({
+         data: {
+            ...validatedFields,
+            image: fullPath,
+            profileId: user.id,
+         },
+      });
+   } catch (error) {
+      return renderError(error);
+   }
+   redirect("/");
+};
+
+export const fetchCars = async ({
+   search = "",
+   category,
+}: {
+   search?: string;
+   category?: string;
+}) => {
+   const cars = await db.car.findMany({
+      where: {
+         category,
+         OR: [
+            { company: { contains: search, mode: "insensitive" } },
+            { model: { contains: search, mode: "insensitive" } },
+         ],
       },
-    });
-  } catch (error) {
-    return renderError(error);
-  }
-  redirect('/');
+      select: {
+         id: true,
+         company: true,
+         model: true,
+         tagline: true,
+         city: true,
+         image: true,
+         price: true,
+      },
+   });
+   return cars;
 };

@@ -80,8 +80,8 @@ export const carSchema = z.object({
    ),
    color: z
       .string()
-      .min(5, {
-         message: "رنگ حداقل باید شامل 5 حرف باشد",
+      .min(2, {
+         message: "رنگ حداقل باید شامل 2 حرف باشد",
       })
       .max(15, {
          message: "رنگ حداکثر باید شامل 15 حرف باشد",
