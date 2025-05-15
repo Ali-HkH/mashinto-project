@@ -185,3 +185,74 @@ export const fetchCars = async ({
    });
    return cars;
 };
+
+export const fetchFavoriteId = async ({
+  carId,
+}: {
+  carId: string;
+}) => {
+  const user = await getAuthUser();
+  const favorite = await db.favorite.findFirst({
+    where: {
+      carId,
+      profileId: user.id,
+    },
+    select: {
+      id: true,
+    },
+  });
+  return favorite?.id || null;
+};
+
+export const toggleFavoriteAction = async (prevState: {
+  carId: string;
+  favoriteId: string | null;
+  pathname: string;
+}) => {
+  const user = await getAuthUser();
+  const { carId, favoriteId, pathname } = prevState;
+  try {
+    if (favoriteId) {
+      await db.favorite.delete({
+        where: {
+          id: favoriteId,
+        },
+      });
+    } else {
+      await db.favorite.create({
+        data: {
+          carId,
+          profileId: user.id,
+        },
+      });
+    }
+    revalidatePath(pathname);
+    return { message: favoriteId ? 'از موردعلاقه ها حذف شد' : 'به موردعلاقه ها اضافه شد' };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
+export const fetchFavorites = async () => {
+  const user = await getAuthUser();
+  const favorites = await db.favorite.findMany({
+    where: {
+      profileId: user.id,
+    },
+    select: {
+      car: {
+        select: {
+          id: true,
+          company: true,
+          model: true,
+          tagline: true,
+          price: true,
+          city: true,
+          image: true,
+        },
+      },
+    },
+  });
+  return favorites.map((favorite) => favorite.car);
+};
+
