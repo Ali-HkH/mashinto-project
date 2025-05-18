@@ -10,7 +10,6 @@ import ImageContainer from "@/components/cars/ImageContainer";
 import ShareButton from "@/components/cars/ShareButton";
 import UserInfo from "@/components/cars/UserInfo";
 import { fetchCarDetails } from "@/utils/actions";
-import { amenities } from "@/utils/amenities";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { redirect } from "next/navigation";
 
@@ -53,7 +52,7 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
                <UserInfo profile={{ firstName, profileImage }} />
                <Separator className="mt-4" />
                <Description description={car.description} />
-               <Amenities amenities=""/>
+               <Amenities amenities={car.amenities}/>
                <DynamicCarMap cityName={car.city} />
             </div>
             <div className="lg:col-span-4 flex flex-col items-center">

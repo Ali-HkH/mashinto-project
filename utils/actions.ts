@@ -171,6 +171,7 @@ export const fetchCars = async ({
          OR: [
             { company: { contains: search, mode: "insensitive" } },
             { model: { contains: search, mode: "insensitive" } },
+            { tagline: { contains: search, mode: "insensitive" } },
          ],
       },
       select: {
