@@ -11,7 +11,7 @@ async function CarRating({
   const rating = 4.7;
   const count = 100;
 
-  const className = `flex gap-1 items-start ${inPage ? 'text-md' : 'text-xs'}`;
+  const className = `flex gap-1 items-center ${inPage ? 'text-md' : 'text-xs'}`;
   const countText = count > 1 ? 'بازخوردها' : 'بازخورد';
   const countValue = `(${count}) ${inPage ? countText : ''}`;
   return (

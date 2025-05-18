@@ -256,3 +256,13 @@ export const fetchFavorites = async () => {
   return favorites.map((favorite) => favorite.car);
 };
 
+export const fetchCarDetails = async (id: string) => {
+  return db.car.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      profile: true,
+    },
+  });
+};

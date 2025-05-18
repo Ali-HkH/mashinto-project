@@ -26,7 +26,7 @@ function CounterInput({
       });
    };
    return (
-      <Card className="mb-4">
+      <Card className="mb-4 w-full">
          <input type="hidden" name={name} value={count} />
          <CardHeader className="flex flex-col gapy-5">
             <div className="w-full flex items-center justify-between flex-wrap">

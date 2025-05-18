@@ -90,6 +90,7 @@ export const carSchema = z.object({
    city: z.string(),
    transmission: z.string(),
    fuelType: z.string(),
+   amenities: z.string(),
    year: z.coerce.number().int().min(0, {
       message: "سال ساخت باید عددی مثبت باشد",
    }),

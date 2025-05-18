@@ -10,6 +10,7 @@ import CitiesInput from "@/components/form/CitiesInput";
 import CounterInput from "@/components/form/CounterInput";
 import ImageInput from "@/components/form/ImageInput";
 import { createRentalCarAction } from "@/utils/actions";
+import AmenitiesInput from "@/components/form/AmenitiesInput";
 
 function CreateCarRental() {
    return (
@@ -60,7 +61,6 @@ function CreateCarRental() {
                   />
                   <ImageInput />
                </div>
-
                <TextAreaInput
                   name="description"
                   labelText="توضیحات (10 تا 1000 کلمه)"
@@ -70,9 +70,14 @@ function CreateCarRental() {
                   <TransmissionInput />
                   <FuelTypeInput />
                   <CitiesInput />
+               </div>
+               <h3 className="text-lg mt-10 mb-6 font-medium">ظرفیت</h3>
+               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-x-8">
                   <CounterInput detail="سرنشین" name="seats" />
                   <CounterInput detail="در" name="doors" />
                </div>
+               <h3 className="text-lg mt-10 mb-6 font-medium">امکانات رفاهی</h3>
+               <AmenitiesInput />
                <SubmitButton text="ایجاد اجاره" className="mt-12" />
             </FormContainer>
          </div>
