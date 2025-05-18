@@ -1,10 +1,8 @@
 "use client";
 import { ThemeProvider } from "./theme-provider";
-import { useTheme } from "next-themes";
 import { Toaster } from "sonner";
 
 function Providers({ children }: { children: React.ReactNode }) {
-   const { resolvedTheme } = useTheme();
    return (
       <>
          <Toaster />

@@ -3,22 +3,18 @@ import CarsContainer from "@/components/home/CarsContainer";
 import LoadingCards from "@/components/card/LoadingCards";
 import { Suspense } from "react";
 
-function HomePage({
-   searchParams,
-}: {
-   searchParams: { category?: string; search?: string };
-}) {
+interface PageProps {
+   searchParams: Promise<{ category?: string; search?: string }>;
+}
+
+async function HomePage({ searchParams }: PageProps) {
+   const { category, search } = await searchParams;
+
    return (
       <section>
-         <CategoriesList
-            category={searchParams?.category}
-            search={searchParams?.search}
-         />
+         <CategoriesList category={category} search={search} />
          <Suspense fallback={<LoadingCards />}>
-            <CarsContainer
-               category={searchParams?.category}
-               search={searchParams?.search}
-            />
+            <CarsContainer category={category} search={search} />
          </Suspense>
       </section>
    );

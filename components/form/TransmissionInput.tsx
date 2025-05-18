@@ -15,7 +15,11 @@ function TransmissionInput({ defaultValue }: { defaultValue?: string }) {
          <Label htmlFor={name} className="mb-1">
             گیربکس
          </Label>
-         <Select defaultValue="گیربکس دستی" name={name} required>
+         <Select
+            defaultValue={defaultValue || "گیربکس دستی"}
+            name={name}
+            required
+         >
             <SelectTrigger id={name}>
                <SelectValue />
             </SelectTrigger>

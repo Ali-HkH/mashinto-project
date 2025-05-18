@@ -6,7 +6,12 @@ import {
    SelectTrigger,
    SelectValue,
 } from "@/components/ui/select";
-import { NounGasoline, NounDiesel, NounElectric, NounHybrid  } from "@/utils/icons";
+import {
+   NounGasoline,
+   NounDiesel,
+   NounElectric,
+   NounHybrid,
+} from "@/utils/icons";
 
 const name = "fuelType";
 function FuelTypeInput({ defaultValue }: { defaultValue?: string }) {
@@ -15,7 +20,7 @@ function FuelTypeInput({ defaultValue }: { defaultValue?: string }) {
          <Label htmlFor={name} className="mb-1">
             سوخت
          </Label>
-         <Select defaultValue="بنزین" name={name} required>
+         <Select defaultValue={defaultValue || "بنزین"} name={name} required>
             <SelectTrigger id={name}>
                <SelectValue />
             </SelectTrigger>
@@ -23,7 +28,11 @@ function FuelTypeInput({ defaultValue }: { defaultValue?: string }) {
                <SelectItem value="بنزین">
                   <span className="flex items-center gap-2">
                      <NounGasoline
-                        style={{ width: "30px", height: "30px", color: "#408BFF"}}
+                        style={{
+                           width: "30px",
+                           height: "30px",
+                           color: "#408BFF",
+                        }}
                      />
                      بنزین
                   </span>
@@ -31,7 +40,11 @@ function FuelTypeInput({ defaultValue }: { defaultValue?: string }) {
                <SelectItem value="دیزل">
                   <span className="flex items-center gap-2">
                      <NounDiesel
-                        style={{ width: "30px", height: "30px", color: "#408BFF"}}
+                        style={{
+                           width: "30px",
+                           height: "30px",
+                           color: "#408BFF",
+                        }}
                      />
                      دیزل
                   </span>
@@ -39,7 +52,11 @@ function FuelTypeInput({ defaultValue }: { defaultValue?: string }) {
                <SelectItem value="برقی">
                   <span className="flex items-center gap-2">
                      <NounElectric
-                        style={{ width: "30px", height: "30px", color: "#408BFF"}}
+                        style={{
+                           width: "30px",
+                           height: "30px",
+                           color: "#408BFF",
+                        }}
                      />
                      برقی
                   </span>
@@ -47,7 +64,11 @@ function FuelTypeInput({ defaultValue }: { defaultValue?: string }) {
                <SelectItem value="هیبرید">
                   <span className="flex items-center gap-2">
                      <NounHybrid
-                        style={{ width: "30px", height: "30px", color: "#408BFF"}}
+                        style={{
+                           width: "30px",
+                           height: "30px",
+                           color: "#408BFF",
+                        }}
                      />
                      هیبرید
                   </span>

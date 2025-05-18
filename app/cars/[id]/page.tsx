@@ -13,10 +13,13 @@ import { fetchCarDetails } from "@/utils/actions";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { redirect } from "next/navigation";
 
+interface PageProps {
+   params: Promise<{ id: string }>;
+}
 
-
-async function PropertyDetailsPage({ params }: { params: { id: string } }) {
-   const car = await fetchCarDetails(params.id);
+async function PropertyDetailsPage({ params }: PageProps) {
+   const { id } = await params;
+   const car = await fetchCarDetails(id);
    if (!car) redirect("/");
 
    const { doors, seats, transmission, fuelType } = car;
@@ -52,7 +55,7 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
                <UserInfo profile={{ firstName, profileImage }} />
                <Separator className="mt-4" />
                <Description description={car.description} />
-               <Amenities amenities={car.amenities}/>
+               <Amenities amenities={car.amenities} />
                <DynamicCarMap cityName={car.city} />
             </div>
             <div className="lg:col-span-4 flex flex-col items-center">
