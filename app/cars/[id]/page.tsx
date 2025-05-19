@@ -9,6 +9,8 @@ import DynamicCarMap from "@/components/cars/DynamicCarMap";
 import ImageContainer from "@/components/cars/ImageContainer";
 import ShareButton from "@/components/cars/ShareButton";
 import UserInfo from "@/components/cars/UserInfo";
+import CarReviews from "@/components/reviews/CarReviews";
+import SubmitReview from "@/components/reviews/SubmitReview";
 import { fetchCarDetails } from "@/utils/actions";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { redirect } from "next/navigation";
@@ -62,6 +64,8 @@ async function PropertyDetailsPage({ params }: PageProps) {
                <BookingCalendar />
             </div>
          </section>
+         <SubmitReview carId={car.id} />
+         <CarReviews carId={car.id} />
       </section>
    );
 }

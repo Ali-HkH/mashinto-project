@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import { SignInButton } from "@clerk/nextjs";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { LuTrash2, LuPen } from "react-icons/lu";
 
 type BtnSize = "default" | "lg" | "sm";
 
@@ -55,22 +56,55 @@ export const CardSignInButton = () => {
    );
 };
 
-export const CardToggleFavesButton = ({ isFavorite }: { isFavorite: boolean }) => {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      type='submit'
-      size='icon'
-      variant='outline'
-      className=' p-2 cursor-pointer'
-    >
-      {pending ? (
-        <ReloadIcon className=' animate-spin' />
-      ) : isFavorite ? (
-        <FaHeart />
-      ) : (
-        <FaRegHeart />
-      )}
-    </Button>
-  );
+export const CardToggleFavesButton = ({
+   isFavorite,
+}: {
+   isFavorite: boolean;
+}) => {
+   const { pending } = useFormStatus();
+   return (
+      <Button
+         type="submit"
+         size="icon"
+         variant="outline"
+         className=" p-2 cursor-pointer dark:bg-zinc-900 dark:hover:bg-zinc-800"
+      >
+         {pending ? (
+            <ReloadIcon className=" animate-spin" />
+         ) : isFavorite ? (
+            <FaHeart />
+         ) : (
+            <FaRegHeart />
+         )}
+      </Button>
+   );
+};
+
+type actionType = "edit" | "delete";
+
+export const IconButton = ({ actionType }: { actionType: actionType }) => {
+   const { pending } = useFormStatus();
+
+   const renderIcon = () => {
+      switch (actionType) {
+         case "edit":
+            return <LuPen />;
+         case "delete":
+            return <LuTrash2 />;
+         default:
+            const never: never = actionType;
+            throw new Error(`نوع آیکون نامعتبر!: ${never}`);
+      }
+   };
+
+   return (
+      <Button
+         type="submit"
+         size="icon"
+         variant="link"
+         className="p-2 cursor-pointer"
+      >
+         {pending ? <ReloadIcon className=" animate-spin" /> : renderIcon()}
+      </Button>
+   );
 };

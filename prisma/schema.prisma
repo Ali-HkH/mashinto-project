@@ -21,6 +21,7 @@ model Profile {
   updatedAt    DateTime   @updatedAt
   cars         Car[]
   favorites    Favorite[]
+  reviews      Review[]
 }
 
 model Car {
@@ -46,7 +47,7 @@ model Car {
   profile        Profile   @relation(fields: [profileId], references: [clerkId], onDelete: Cascade)
   profileId      String
   favorites    Favorite[]
-
+  reviews      Review[]
 }
 
 model Favorite {
@@ -59,4 +60,16 @@ model Favorite {
   car       Car  @relation(fields: [carId], references: [id], onDelete: Cascade)
   carId     String
 
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  profile    Profile  @relation(fields: [profileId], references: [clerkId], onDelete: Cascade)
+  profileId  String
+  car        Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  carId      String
+  rating     Int
+  comment    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

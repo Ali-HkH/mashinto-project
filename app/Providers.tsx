@@ -1,11 +1,17 @@
 "use client";
 import { ThemeProvider } from "./theme-provider";
-import { Toaster } from "sonner";
+import { useTheme } from "next-themes";
+import { Toaster as SonnerToaster, type ToasterProps } from "sonner";
 
 function Providers({ children }: { children: React.ReactNode }) {
+   const { resolvedTheme } = useTheme();
+
    return (
       <>
-         <Toaster />
+         <SonnerToaster
+            theme={resolvedTheme as ToasterProps["theme"]}
+            richColors
+         />
          <ThemeProvider
             attribute="class"
             defaultTheme="system"

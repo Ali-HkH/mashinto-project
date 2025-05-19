@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
    carSchema,
+   createReviewSchema,
    imageSchema,
    profileSchema,
    validateWithZodSchema,
@@ -187,83 +188,169 @@ export const fetchCars = async ({
    return cars;
 };
 
-export const fetchFavoriteId = async ({
-  carId,
-}: {
-  carId: string;
-}) => {
-  const user = await getAuthUser();
-  const favorite = await db.favorite.findFirst({
-    where: {
-      carId,
-      profileId: user.id,
-    },
-    select: {
-      id: true,
-    },
-  });
-  return favorite?.id || null;
+export const fetchFavoriteId = async ({ carId }: { carId: string }) => {
+   const user = await getAuthUser();
+   const favorite = await db.favorite.findFirst({
+      where: {
+         carId,
+         profileId: user.id,
+      },
+      select: {
+         id: true,
+      },
+   });
+   return favorite?.id || null;
 };
 
 export const toggleFavoriteAction = async (prevState: {
-  carId: string;
-  favoriteId: string | null;
-  pathname: string;
+   carId: string;
+   favoriteId: string | null;
+   pathname: string;
 }) => {
-  const user = await getAuthUser();
-  const { carId, favoriteId, pathname } = prevState;
-  try {
-    if (favoriteId) {
-      await db.favorite.delete({
-        where: {
-          id: favoriteId,
-        },
-      });
-    } else {
-      await db.favorite.create({
-        data: {
-          carId,
-          profileId: user.id,
-        },
-      });
-    }
-    revalidatePath(pathname);
-    return { message: favoriteId ? 'از موردعلاقه ها حذف شد' : 'به موردعلاقه ها اضافه شد' };
-  } catch (error) {
-    return renderError(error);
-  }
+   const user = await getAuthUser();
+   const { carId, favoriteId, pathname } = prevState;
+   try {
+      if (favoriteId) {
+         await db.favorite.delete({
+            where: {
+               id: favoriteId,
+            },
+         });
+      } else {
+         await db.favorite.create({
+            data: {
+               carId,
+               profileId: user.id,
+            },
+         });
+      }
+      revalidatePath(pathname);
+      return {
+         message: favoriteId
+            ? "از موردعلاقه ها حذف شد"
+            : "به موردعلاقه ها اضافه شد",
+      };
+   } catch (error) {
+      return renderError(error);
+   }
 };
 
 export const fetchFavorites = async () => {
-  const user = await getAuthUser();
-  const favorites = await db.favorite.findMany({
-    where: {
-      profileId: user.id,
-    },
-    select: {
-      car: {
-        select: {
-          id: true,
-          company: true,
-          model: true,
-          tagline: true,
-          price: true,
-          city: true,
-          image: true,
-        },
+   const user = await getAuthUser();
+   const favorites = await db.favorite.findMany({
+      where: {
+         profileId: user.id,
       },
-    },
-  });
-  return favorites.map((favorite) => favorite.car);
+      select: {
+         car: {
+            select: {
+               id: true,
+               company: true,
+               model: true,
+               tagline: true,
+               price: true,
+               city: true,
+               image: true,
+            },
+         },
+      },
+   });
+   return favorites.map((favorite) => favorite.car);
 };
 
 export const fetchCarDetails = async (id: string) => {
-  return db.car.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      profile: true,
-    },
-  });
+   return db.car.findUnique({
+      where: {
+         id,
+      },
+      include: {
+         profile: true,
+      },
+   });
+};
+
+export async function createReviewAction(prevState: any, formData: FormData) {
+   const user = await getAuthUser();
+   try {
+      const rawData = Object.fromEntries(formData);
+
+      const validatedFields = validateWithZodSchema(
+         createReviewSchema,
+         rawData
+      );
+      await db.review.create({
+         data: {
+            ...validatedFields,
+            profileId: user.id,
+         },
+      });
+      revalidatePath(`/cars/${validatedFields.carId}`);
+      return { message: "بازخورد شما ثبت شد" };
+   } catch (error) {
+      return renderError(error);
+   }
+}
+
+export async function fetchPropertyReviews(carId: string) {
+   const reviews = await db.review.findMany({
+      where: {
+         carId,
+      },
+      select: {
+         id: true,
+         rating: true,
+         comment: true,
+         profile: {
+            select: {
+               firstName: true,
+               profileImage: true,
+            },
+         },
+      },
+      orderBy: {
+         createdAt: "desc",
+      },
+   });
+   return reviews;
+}
+
+export const fetchPropertyReviewsByUser = async () => {
+   const user = await getAuthUser();
+   const reviews = await db.review.findMany({
+      where: {
+         profileId: user.id,
+      },
+      select: {
+         id: true,
+         rating: true,
+         comment: true,
+         car: {
+            select: {
+               company: true,
+               model: true,
+               image: true,
+            },
+         },
+      },
+   });
+   return reviews;
+};
+
+export const deleteReviewAction = async (prevState: { reviewId: string }) => {
+  const { reviewId } = prevState;
+  const user = await getAuthUser();
+
+  try {
+    await db.review.delete({
+      where: {
+        id: reviewId,
+        profileId: user.id,
+      },
+    });
+
+    revalidatePath('/reviews');
+    return { message: 'بازخورد شما حذف شد' };
+  } catch (error) {
+    return renderError(error);
+  }
 };
