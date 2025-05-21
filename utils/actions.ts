@@ -363,3 +363,24 @@ export const findExistingReview = async (userId: string, carId: string) => {
       },
    });
 };
+
+export async function fetchPropertyRating(carId: string) {
+  const result = await db.review.groupBy({
+    by: ['carId'],
+    _avg: {
+      rating: true,
+    },
+    _count: {
+      rating: true,
+    },
+    where: {
+      carId,
+    },
+  });
+
+  // empty array if no reviews
+  return {
+    rating: result[0]?._avg.rating?.toFixed(1) ?? 0,
+    count: result[0]?._count.rating ?? 0,
+  };
+}
