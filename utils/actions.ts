@@ -337,20 +337,29 @@ export const fetchPropertyReviewsByUser = async () => {
 };
 
 export const deleteReviewAction = async (prevState: { reviewId: string }) => {
-  const { reviewId } = prevState;
-  const user = await getAuthUser();
+   const { reviewId } = prevState;
+   const user = await getAuthUser();
 
-  try {
-    await db.review.delete({
+   try {
+      await db.review.delete({
+         where: {
+            id: reviewId,
+            profileId: user.id,
+         },
+      });
+
+      revalidatePath("/reviews");
+      return { message: "بازخورد شما حذف شد" };
+   } catch (error) {
+      return renderError(error);
+   }
+};
+
+export const findExistingReview = async (userId: string, carId: string) => {
+   return db.review.findFirst({
       where: {
-        id: reviewId,
-        profileId: user.id,
+         profileId: userId,
+         carId: carId,
       },
-    });
-
-    revalidatePath('/reviews');
-    return { message: 'بازخورد شما حذف شد' };
-  } catch (error) {
-    return renderError(error);
-  }
+   });
 };

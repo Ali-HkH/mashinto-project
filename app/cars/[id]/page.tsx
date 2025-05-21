@@ -11,7 +11,8 @@ import ShareButton from "@/components/cars/ShareButton";
 import UserInfo from "@/components/cars/UserInfo";
 import CarReviews from "@/components/reviews/CarReviews";
 import SubmitReview from "@/components/reviews/SubmitReview";
-import { fetchCarDetails } from "@/utils/actions";
+import { fetchCarDetails, findExistingReview } from "@/utils/actions";
+import { auth } from "@clerk/nextjs/server";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { redirect } from "next/navigation";
 
@@ -23,6 +24,12 @@ async function PropertyDetailsPage({ params }: PageProps) {
    const { id } = await params;
    const car = await fetchCarDetails(id);
    if (!car) redirect("/");
+
+   // allow review :
+   const { userId } = await auth();
+   const isNotOwner = car.profile.clerkId !== userId;
+   const reviewDoesNotExist =
+      userId && isNotOwner && !(await findExistingReview(userId, car.id));
 
    const { doors, seats, transmission, fuelType } = car;
    const details = { doors, seats, transmission, fuelType };
@@ -64,7 +71,7 @@ async function PropertyDetailsPage({ params }: PageProps) {
                <BookingCalendar />
             </div>
          </section>
-         <SubmitReview carId={car.id} />
+         {reviewDoesNotExist && <SubmitReview carId={car.id} />}
          <CarReviews carId={car.id} />
       </section>
    );
