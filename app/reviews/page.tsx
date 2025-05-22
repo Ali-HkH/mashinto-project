@@ -1,15 +1,12 @@
 import EmptyList from "@/components/home/EmptyList";
-import {
-   deleteReviewAction,
-   fetchPropertyReviewsByUser,
-} from "@/utils/actions";
+import { deleteReviewAction, fetchCarReviewsByUser } from "@/utils/actions";
 import ReviewCard from "@/components/reviews/ReviewCard";
 import Title from "@/components/cars/Title";
 import FormContainer from "@/components/form/FormContainer";
 import { IconButton } from "@/components/form/Buttons";
 
 async function ReviewsPage() {
-   const reviews = await fetchPropertyReviewsByUser();
+   const reviews = await fetchCarReviewsByUser();
    if (reviews.length === 0) return <EmptyList />;
 
    return (
@@ -19,11 +16,11 @@ async function ReviewsPage() {
             {reviews.map((review) => {
                const { comment, rating } = review;
                const { company, model, image } = review.car;
+               const name = `${company} ${model}`;
                const reviewInfo = {
                   comment,
                   rating,
-                  company,
-                  model,
+                  name,
                   image,
                };
                return (

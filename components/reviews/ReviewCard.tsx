@@ -6,8 +6,7 @@ type ReviewCardProps = {
    reviewInfo: {
       comment: string;
       rating: number;
-      company: string;
-      model: string;
+      name: string;
       image: string;
    };
    children?: React.ReactNode;
@@ -24,9 +23,7 @@ function ReviewCard({ reviewInfo, children }: ReviewCardProps) {
                   className="w-14 h-14 rounded-full object-cover"
                />
                <div className="mr-6">
-                  <h3 className="text-sm font-bold mb-2">
-                     {reviewInfo.company} {reviewInfo.model}
-                  </h3>
+                  <h3 className="text-sm font-bold mb-2">{reviewInfo.name}</h3>
                   <Rating rating={reviewInfo.rating} />
                </div>
             </div>

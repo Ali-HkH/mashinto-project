@@ -298,7 +298,7 @@ export async function createReviewAction(prevState: any, formData: FormData) {
    }
 }
 
-export async function fetchPropertyReviews(carId: string) {
+export async function fetchCarReviews(carId: string) {
    const reviews = await db.review.findMany({
       where: {
          carId,
@@ -321,7 +321,7 @@ export async function fetchPropertyReviews(carId: string) {
    return reviews;
 }
 
-export const fetchPropertyReviewsByUser = async () => {
+export const fetchCarReviewsByUser = async () => {
    const user = await getAuthUser();
    const reviews = await db.review.findMany({
       where: {
