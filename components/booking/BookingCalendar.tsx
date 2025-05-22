@@ -26,7 +26,8 @@ function BookingCalendar() {
 
    useEffect(() => {
       const selectedRange = generateDateRange(range);
-      const isDisabledDateIncluded = selectedRange.some((date) => {
+      // disabled days included?
+      selectedRange.some((date) => {
          if (unavailableDates[date]) {
             setRange(defaultSelected);
             toast("پیغام", {
@@ -72,7 +73,7 @@ const calendarClassOverride = {
    day: "w-full h-full flex items-center justify-center rounded hover:bg-primary px-1",
    selected:
       "bg-primary text-black dark:text-white hover:text-white dark:hover:text-black",
-   today: "border border-blue-500 text-blue-600",
+   today: "border border-blue-500 text-blue-600 hover:text-black dark:hover:text-white",
    outside: "text-muted-foreground opacity-50",
    disabled: "text-muted-foreground opacity-50",
    range_middle:

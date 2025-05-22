@@ -36,7 +36,7 @@ function BookingForm() {
          <FormRow label="مالیات" amount={tax} />
          <Separator className="mt-4" />
          <CardTitle className="mt-4">
-            <FormRow label="هزینه کل اجاره" amount={orderTotal} />
+            <FormRow label="هزینه کل کرایه" amount={orderTotal} />
          </CardTitle>
       </Card>
    );
