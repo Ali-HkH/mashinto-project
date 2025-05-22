@@ -471,3 +471,133 @@ export async function deleteBookingAction(prevState: { bookingId: string }) {
       return renderError(error);
    }
 }
+
+export const fetchRentals = async () => {
+  const user = await getAuthUser();
+  const rentals = await db.car.findMany({
+    where: {
+      profileId: user.id,
+    },
+    select: {
+      id: true,
+      company: true,
+      model: true,
+      price: true,
+    },
+  });
+
+  const rentalsWithBookingSums = await Promise.all(
+    rentals.map(async (rental) => {
+      const totalDaysSum = await db.booking.aggregate({
+        where: {
+          carId: rental.id,
+        },
+        _sum: {
+          totaldays: true,
+        },
+      });
+
+      const orderTotalSum = await db.booking.aggregate({
+        where: {
+          carId: rental.id,
+        },
+        _sum: {
+          orderTotal: true,
+        },
+      });
+
+      return {
+        ...rental,
+        totalDaysSum: totalDaysSum._sum.totaldays,
+        orderTotalSum: orderTotalSum._sum.orderTotal,
+      };
+    })
+  );
+
+  return rentalsWithBookingSums;
+};
+
+export async function deleteRentalAction(prevState: { carId: string }) {
+  const { carId } = prevState;
+  const user = await getAuthUser();
+
+  try {
+    await db.car.delete({
+      where: {
+        id: carId,
+        profileId: user.id,
+      },
+    });
+
+    revalidatePath('/rentals');
+    return { message: 'اجاره شما با موفقیت حذف شد.' };
+  } catch (error) {
+    return renderError(error);
+  }
+}
+
+export const fetchRentalDetails = async (carId: string) => {
+  const user = await getAuthUser();
+
+  return db.car.findUnique({
+    where: {
+      id: carId,
+      profileId: user.id,
+    },
+  });
+};
+
+export const updateCarInfoAction = async (
+  prevState: any,
+  formData: FormData
+): Promise<{ message: string }> => {
+
+  const user = await getAuthUser();
+  const carId = formData.get('id') as string;
+  try {
+    const rawData = Object.fromEntries(formData);
+    const validatedFields = validateWithZodSchema(carSchema, rawData);
+    await db.car.update({
+      where: {
+        id: carId,
+        profileId: user.id,
+      },
+      data: {
+        ...validatedFields,
+      },
+    });
+
+    revalidatePath(`/rentals/${carId}/edit`);
+    return { message: 'اطلاعات خودرو بروزرسانی شد.' };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
+export const updateCarImageAction = async (
+  prevState: any,
+  formData: FormData
+): Promise<{ message: string }> => {
+  const user = await getAuthUser();
+  const carId = formData.get('id') as string;
+
+  try {
+    const image = formData.get('image') as File;
+    const validatedFields = validateWithZodSchema(imageSchema, { image });
+    const fullPath = await uploadImage(validatedFields.image);
+
+    await db.car.update({
+      where: {
+        id: carId,
+        profileId: user.id,
+      },
+      data: {
+        image: fullPath,
+      },
+    });
+    revalidatePath(`/rentals/${carId}/edit`);
+    return { message: 'عکس خودرو ویرایش شد.' };
+  } catch (error) {
+    return renderError(error);
+  }
+};
