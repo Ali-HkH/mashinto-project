@@ -12,6 +12,7 @@ import {
    validateWithZodSchema,
 } from "./schemas";
 import { uploadImage } from "./supabase";
+import { calculateTotals } from "./calculateTotals";
 
 const getAuthUser = async () => {
    const user = await currentUser();
@@ -265,6 +266,12 @@ export const fetchCarDetails = async (id: string) => {
       },
       include: {
          profile: true,
+         bookings: {
+            select: {
+               checkIn: true,
+               checkOut: true,
+            },
+         },
       },
    });
 };
@@ -364,23 +371,105 @@ export const findExistingReview = async (userId: string, carId: string) => {
    });
 };
 
-export async function fetchPropertyRating(carId: string) {
-  const result = await db.review.groupBy({
-    by: ['carId'],
-    _avg: {
-      rating: true,
-    },
-    _count: {
-      rating: true,
-    },
-    where: {
-      carId,
-    },
-  });
+export async function fetchCarRating(carId: string) {
+   const result = await db.review.groupBy({
+      by: ["carId"],
+      _avg: {
+         rating: true,
+      },
+      _count: {
+         rating: true,
+      },
+      where: {
+         carId,
+      },
+   });
 
-  // empty array if no reviews
-  return {
-    rating: result[0]?._avg.rating?.toFixed(1) ?? 0,
-    count: result[0]?._count.rating ?? 0,
-  };
+   // empty array if no reviews
+   return {
+      rating: result[0]?._avg.rating?.toFixed(1) ?? 0,
+      count: result[0]?._count.rating ?? 0,
+   };
+}
+
+export const createBookingAction = async (prevState: {
+   carId: string;
+   checkIn: Date;
+   checkOut: Date;
+}) => {
+   const user = await getAuthUser();
+
+   const { carId, checkIn, checkOut } = prevState;
+
+   const car = await db.car.findUnique({
+      where: { id: carId },
+      select: { price: true },
+   });
+   if (!car) {
+      return { message: "ماشینی پیدا نشد!" };
+   }
+
+   const { orderTotal, totalDays } = calculateTotals({
+      checkIn,
+      checkOut,
+      price: car.price,
+   });
+
+   try {
+      const booking = await db.booking.create({
+         data: {
+            checkIn,
+            checkOut,
+            orderTotal,
+            totaldays: totalDays,
+            profileId: user.id,
+            carId,
+         },
+      });
+   } catch (error) {
+      return renderError(error);
+   }
+   redirect("/bookings");
+};
+
+export const fetchBookings = async () => {
+   const user = await getAuthUser();
+   const bookings = await db.booking.findMany({
+      where: {
+         profileId: user.id,
+      },
+      include: {
+         car: {
+            select: {
+               id: true,
+               company: true,
+               model: true,
+               city: true,
+            },
+         },
+      },
+      orderBy: {
+         checkIn: "desc",
+      },
+   });
+   return bookings;
+};
+
+export async function deleteBookingAction(prevState: { bookingId: string }) {
+   const { bookingId } = prevState;
+   const user = await getAuthUser();
+
+   try {
+      const result = await db.booking.delete({
+         where: {
+            id: bookingId,
+            profileId: user.id,
+         },
+      });
+
+      revalidatePath("/bookings");
+      return { message: "کرایه شما لغو و حذف شد." };
+   } catch (error) {
+      return renderError(error);
+   }
 }

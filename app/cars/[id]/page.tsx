@@ -1,7 +1,7 @@
+import { DynamicBookingWrapper } from "@/components/booking/DynamicBookingWrapper";
 import CarRating from "@/components/card/CarRating";
 import FavoriteToggleButton from "@/components/card/FavoriteToggleButton";
 import Amenities from "@/components/cars/Amenities";
-import BookingCalendar from "@/components/cars/booking/BookingCalendar";
 import BreadCrumbs from "@/components/cars/BreadCrumbs";
 import CarDetails from "@/components/cars/CarDetails";
 import Description from "@/components/cars/Description";
@@ -68,7 +68,11 @@ async function PropertyDetailsPage({ params }: PageProps) {
                <DynamicCarMap cityName={car.city} />
             </div>
             <div className="lg:col-span-4 flex flex-col items-center">
-               <BookingCalendar />
+               <DynamicBookingWrapper
+                  carId={car.id}
+                  price={car.price}
+                  bookings={car.bookings}
+               />
             </div>
          </section>
          {reviewDoesNotExist && <SubmitReview carId={car.id} />}

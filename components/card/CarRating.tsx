@@ -1,4 +1,4 @@
-import { fetchPropertyRating } from "@/utils/actions";
+import { fetchCarRating } from "@/utils/actions";
 import { FaStar } from "react-icons/fa";
 
 async function CarRating({
@@ -8,7 +8,7 @@ async function CarRating({
    carId: string;
    inPage: boolean;
 }) {
-   const { rating, count } = await fetchPropertyRating(carId);
+   const { rating, count } = await fetchCarRating(carId);
    if (count === 0) return null;
 
    const className = `flex gap-1 items-center ${

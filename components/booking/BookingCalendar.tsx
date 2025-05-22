@@ -1,30 +1,60 @@
 "use client";
-import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
+import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
+import { useRentalCar } from "@/utils/store";
+import { toast } from "sonner";
+import {
+   generateDisabledDates,
+   generateDateRange,
+   defaultSelected,
+   generateBlockedPeriods,
+} from "@/utils/calendar";
 
-export default function BookingCalendar() {
+function BookingCalendar() {
    const currentDate = new Date();
-   const defaultSelected: DateRange = {
-      from: undefined,
-      to: undefined,
-   };
+
    const [range, setRange] = useState<DateRange | undefined>(defaultSelected);
 
+   const bookings = useRentalCar((state) => state.bookings);
+   const blockedPeriods = generateBlockedPeriods({
+      bookings,
+      today: currentDate,
+   });
+
+   const unavailableDates = generateDisabledDates(blockedPeriods);
+
+   useEffect(() => {
+      const selectedRange = generateDateRange(range);
+      const isDisabledDateIncluded = selectedRange.some((date) => {
+         if (unavailableDates[date]) {
+            setRange(defaultSelected);
+            toast("پیغام", {
+               description:
+                  "برخی روزها از پیش کرایه شدند. لطفا تاریخی دیگر انتخاب کنید.",
+            });
+            return true;
+         }
+         return false;
+      });
+      useRentalCar.setState({ range });
+   }, [range]);
+
    return (
-      <div dir="ltr" className="p-4">
+      <div dir="ltr" className="p-4 mb-4 mt-8">
          <Calendar
-            className="ltr text-left "
-            classNames={calendarClassOverride}
-            id="test"
             mode="range"
             defaultMonth={currentDate}
             selected={range}
             onSelect={setRange}
+            className="text-left"
+            classNames={calendarClassOverride}
+            disabled={blockedPeriods}
          />
       </div>
    );
 }
+export default BookingCalendar;
 
 const calendarClassOverride = {
    months: "relative border p-5 rounded-lg pt-2",
