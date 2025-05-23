@@ -1,9 +1,21 @@
-import React from 'react'
+import ChartsContainer from '@/components/admin/ChartsContainer';
+import StatsContainer from '@/components/admin/StatsContainer';
+import {
+  ChartsLoadingContainer,
+  StatsLoadingContainer,
+} from '@/components/admin/Loading';
+import { Suspense } from 'react';
 
-function AdminPage() {
+async function AdminPage() {
   return (
-    <div>AdminPage</div>
-  )
+    <>
+      <Suspense fallback={<StatsLoadingContainer />}>
+        <StatsContainer />
+      </Suspense>
+      <Suspense fallback={<ChartsLoadingContainer />}>
+        <ChartsContainer />
+      </Suspense>
+    </>
+  );
 }
-
-export default AdminPage
+export default AdminPage;

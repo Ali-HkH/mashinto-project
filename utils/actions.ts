@@ -13,6 +13,7 @@ import {
 } from "./schemas";
 import { uploadImage } from "./supabase";
 import { calculateTotals } from "./calculateTotals";
+import { formatDate } from "./formats";
 
 const getAuthUser = async () => {
    const user = await currentUser();
@@ -20,6 +21,12 @@ const getAuthUser = async () => {
       throw new Error("برای ساخت پروفایل ابتدا لاگین کنید");
    }
    if (!user.privateMetadata.hasProfile) redirect("/profile/create");
+   return user;
+};
+
+const getAdminUser = async () => {
+   const user = await getAuthUser();
+   if (user.id !== process.env.ADMIN_USER_ID) redirect("/");
    return user;
 };
 
@@ -473,131 +480,201 @@ export async function deleteBookingAction(prevState: { bookingId: string }) {
 }
 
 export const fetchRentals = async () => {
-  const user = await getAuthUser();
-  const rentals = await db.car.findMany({
-    where: {
-      profileId: user.id,
-    },
-    select: {
-      id: true,
-      company: true,
-      model: true,
-      price: true,
-    },
-  });
+   const user = await getAuthUser();
+   const rentals = await db.car.findMany({
+      where: {
+         profileId: user.id,
+      },
+      select: {
+         id: true,
+         company: true,
+         model: true,
+         price: true,
+      },
+   });
 
-  const rentalsWithBookingSums = await Promise.all(
-    rentals.map(async (rental) => {
-      const totalDaysSum = await db.booking.aggregate({
-        where: {
-          carId: rental.id,
-        },
-        _sum: {
-          totaldays: true,
-        },
-      });
+   const rentalsWithBookingSums = await Promise.all(
+      rentals.map(async (rental) => {
+         const totalDaysSum = await db.booking.aggregate({
+            where: {
+               carId: rental.id,
+            },
+            _sum: {
+               totaldays: true,
+            },
+         });
 
-      const orderTotalSum = await db.booking.aggregate({
-        where: {
-          carId: rental.id,
-        },
-        _sum: {
-          orderTotal: true,
-        },
-      });
+         const orderTotalSum = await db.booking.aggregate({
+            where: {
+               carId: rental.id,
+            },
+            _sum: {
+               orderTotal: true,
+            },
+         });
 
-      return {
-        ...rental,
-        totalDaysSum: totalDaysSum._sum.totaldays,
-        orderTotalSum: orderTotalSum._sum.orderTotal,
-      };
-    })
-  );
+         return {
+            ...rental,
+            totalDaysSum: totalDaysSum._sum.totaldays,
+            orderTotalSum: orderTotalSum._sum.orderTotal,
+         };
+      })
+   );
 
-  return rentalsWithBookingSums;
+   return rentalsWithBookingSums;
 };
 
 export async function deleteRentalAction(prevState: { carId: string }) {
-  const { carId } = prevState;
-  const user = await getAuthUser();
+   const { carId } = prevState;
+   const user = await getAuthUser();
 
-  try {
-    await db.car.delete({
-      where: {
-        id: carId,
-        profileId: user.id,
-      },
-    });
+   try {
+      await db.car.delete({
+         where: {
+            id: carId,
+            profileId: user.id,
+         },
+      });
 
-    revalidatePath('/rentals');
-    return { message: 'اجاره شما با موفقیت حذف شد.' };
-  } catch (error) {
-    return renderError(error);
-  }
+      revalidatePath("/rentals");
+      return { message: "اجاره شما با موفقیت حذف شد." };
+   } catch (error) {
+      return renderError(error);
+   }
 }
 
 export const fetchRentalDetails = async (carId: string) => {
-  const user = await getAuthUser();
+   const user = await getAuthUser();
 
-  return db.car.findUnique({
-    where: {
-      id: carId,
-      profileId: user.id,
-    },
-  });
+   return db.car.findUnique({
+      where: {
+         id: carId,
+         profileId: user.id,
+      },
+   });
 };
 
 export const updateCarInfoAction = async (
-  prevState: any,
-  formData: FormData
+   prevState: any,
+   formData: FormData
 ): Promise<{ message: string }> => {
+   const user = await getAuthUser();
+   const carId = formData.get("id") as string;
+   try {
+      const rawData = Object.fromEntries(formData);
+      const validatedFields = validateWithZodSchema(carSchema, rawData);
+      await db.car.update({
+         where: {
+            id: carId,
+            profileId: user.id,
+         },
+         data: {
+            ...validatedFields,
+         },
+      });
 
-  const user = await getAuthUser();
-  const carId = formData.get('id') as string;
-  try {
-    const rawData = Object.fromEntries(formData);
-    const validatedFields = validateWithZodSchema(carSchema, rawData);
-    await db.car.update({
-      where: {
-        id: carId,
-        profileId: user.id,
-      },
-      data: {
-        ...validatedFields,
-      },
-    });
-
-    revalidatePath(`/rentals/${carId}/edit`);
-    return { message: 'اطلاعات خودرو بروزرسانی شد.' };
-  } catch (error) {
-    return renderError(error);
-  }
+      revalidatePath(`/rentals/${carId}/edit`);
+      return { message: "اطلاعات خودرو بروزرسانی شد." };
+   } catch (error) {
+      return renderError(error);
+   }
 };
 
 export const updateCarImageAction = async (
-  prevState: any,
-  formData: FormData
+   prevState: any,
+   formData: FormData
 ): Promise<{ message: string }> => {
-  const user = await getAuthUser();
-  const carId = formData.get('id') as string;
+   const user = await getAuthUser();
+   const carId = formData.get("id") as string;
 
-  try {
-    const image = formData.get('image') as File;
-    const validatedFields = validateWithZodSchema(imageSchema, { image });
-    const fullPath = await uploadImage(validatedFields.image);
+   try {
+      const image = formData.get("image") as File;
+      const validatedFields = validateWithZodSchema(imageSchema, { image });
+      const fullPath = await uploadImage(validatedFields.image);
 
-    await db.car.update({
+      await db.car.update({
+         where: {
+            id: carId,
+            profileId: user.id,
+         },
+         data: {
+            image: fullPath,
+         },
+      });
+      revalidatePath(`/rentals/${carId}/edit`);
+      return { message: "عکس خودرو ویرایش شد." };
+   } catch (error) {
+      return renderError(error);
+   }
+};
+
+export const fetchReservations = async () => {
+   const user = await getAuthUser();
+
+   const reservations = await db.booking.findMany({
       where: {
-        id: carId,
-        profileId: user.id,
+         car: {
+            profileId: user.id,
+         },
       },
-      data: {
-        image: fullPath,
+      orderBy: {
+         createdAt: "desc",
       },
-    });
-    revalidatePath(`/rentals/${carId}/edit`);
-    return { message: 'عکس خودرو ویرایش شد.' };
-  } catch (error) {
-    return renderError(error);
-  }
+      include: {
+         car: {
+            select: {
+               id: true,
+               company: true,
+               model: true,
+               price: true,
+               city: true,
+            },
+         },
+      },
+   });
+   return reservations;
+};
+
+export const fetchStats = async () => {
+   await getAdminUser();
+
+   const usersCount = await db.profile.count();
+   const carsCount = await db.car.count();
+   const bookingsCount = await db.booking.count();
+
+   return {
+      usersCount,
+      carsCount,
+      bookingsCount,
+   };
+};
+
+export const fetchChartsData = async () => {
+   await getAdminUser();
+   const date = new Date();
+   date.setMonth(date.getMonth() - 6);
+   const sixMonthsAgo = date;
+
+   const bookings = await db.booking.findMany({
+      where: {
+         createdAt: {
+            gte: sixMonthsAgo,
+         },
+      },
+      orderBy: {
+         createdAt: "asc",
+      },
+   });
+   let bookingsPerMonth = bookings.reduce((total, current) => {
+      const date = formatDate(current.createdAt, true);
+
+      const existingEntry = total.find((entry) => entry.date === date);
+      if (existingEntry) {
+         existingEntry.count += 1;
+      } else {
+         total.push({ date, count: 1 });
+      }
+      return total;
+   }, [] as Array<{ date: string; count: number }>);
+   return bookingsPerMonth;
 };
