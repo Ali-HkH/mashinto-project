@@ -5,9 +5,9 @@ async function StatsContainer() {
 
    return (
       <div className="mt-8 grid md:grid-cols-2 gap-4 lg:grid-cols-3">
-         <StatsCard title="users" value={data?.usersCount || 0} />
-         <StatsCard title="properties" value={data?.carsCount || 0} />
-         <StatsCard title="bookings" value={data?.bookingsCount || 0} />
+         <StatsCard title="کاربران" value={data?.usersCount || 0} />
+         <StatsCard title="ماشین ها" value={data?.carsCount || 0} />
+         <StatsCard title="کرایه ها" value={data?.bookingsCount || 0} />
       </div>
    );
 }

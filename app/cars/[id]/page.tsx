@@ -70,6 +70,7 @@ async function PropertyDetailsPage({ params }: PageProps) {
             <div className="lg:col-span-4 flex flex-col items-center">
                <DynamicBookingWrapper
                   carId={car.id}
+                  userId={car.profile.clerkId}
                   price={car.price}
                   bookings={car.bookings}
                />

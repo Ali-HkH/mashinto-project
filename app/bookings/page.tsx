@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import EmptyList from "@/components/home/EmptyList";
 import Link from "next/link";
 
@@ -72,9 +74,9 @@ async function BookingsPage() {
 }
 
 function DeleteBooking({ bookingId }: { bookingId: string }) {
-  const deleteBooking = deleteBookingAction.bind(null, { bookingId });
   return (
-    <FormContainer action={deleteBooking}>
+    <FormContainer action={deleteBookingAction}>
+      <input type="hidden" name="bookingId" value={bookingId} />
       <IconButton actionType='delete' />
     </FormContainer>
   );

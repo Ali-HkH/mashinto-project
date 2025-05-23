@@ -6,12 +6,7 @@ import {
    SelectTrigger,
    SelectValue,
 } from "@/components/ui/select";
-import {
-   NounGasoline,
-   NounDiesel,
-   NounElectric,
-   NounHybrid,
-} from "@/utils/icons";
+import { fuelTypes } from "@/utils/fuelTypes";
 
 const name = "fuelType";
 function FuelTypeInput({ defaultValue }: { defaultValue?: string }) {
@@ -25,54 +20,20 @@ function FuelTypeInput({ defaultValue }: { defaultValue?: string }) {
                <SelectValue />
             </SelectTrigger>
             <SelectContent>
-               <SelectItem value="بنزین">
-                  <span className="flex items-center gap-2">
-                     <NounGasoline
-                        style={{
-                           width: "30px",
-                           height: "30px",
-                           color: "#408BFF",
-                        }}
-                     />
-                     بنزین
-                  </span>
-               </SelectItem>
-               <SelectItem value="دیزل">
-                  <span className="flex items-center gap-2">
-                     <NounDiesel
-                        style={{
-                           width: "30px",
-                           height: "30px",
-                           color: "#408BFF",
-                        }}
-                     />
-                     دیزل
-                  </span>
-               </SelectItem>
-               <SelectItem value="برقی">
-                  <span className="flex items-center gap-2">
-                     <NounElectric
-                        style={{
-                           width: "30px",
-                           height: "30px",
-                           color: "#408BFF",
-                        }}
-                     />
-                     برقی
-                  </span>
-               </SelectItem>
-               <SelectItem value="هیبرید">
-                  <span className="flex items-center gap-2">
-                     <NounHybrid
-                        style={{
-                           width: "30px",
-                           height: "30px",
-                           color: "#408BFF",
-                        }}
-                     />
-                     هیبرید
-                  </span>
-               </SelectItem>
+               {fuelTypes.map((item) => (
+                  <SelectItem key={item.label} value={item.label}>
+                     <span className="flex items-center gap-2">
+                        <item.icon
+                           style={{
+                              width: "30px",
+                              height: "30px",
+                              color: "#408BFF",
+                           }}
+                        />
+                        {item.label}
+                     </span>
+                  </SelectItem>
+               ))}
             </SelectContent>
          </Select>
       </div>

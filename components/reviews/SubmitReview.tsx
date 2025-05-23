@@ -13,7 +13,7 @@ function SubmitReview({ carId }: { carId: string }) {
 
    return (
       <div className="mt-8">
-         <Button onClick={() => setIsReviewFormVisible((prev) => !prev)}>
+         <Button className="dark:text-white" onClick={() => setIsReviewFormVisible((prev) => !prev)}>
             بازخوردی ثبت کنید
          </Button>
          {isReviewFormVisible && (

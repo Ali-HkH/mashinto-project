@@ -23,7 +23,7 @@ async function ReservationsPage() {
       <div className="mt-16">
          <h4 className="mb-4 capitalize">کل رزرو شده ها : {reservations.length}</h4>
          <Table>
-            <TableCaption>یک لیستی از کل رزرو شده های شما</TableCaption>
+            <TableCaption>لیستی از کل رزرو شده های شما</TableCaption>
             <TableHeader>
                <TableRow className="[&>*]:text-right">
                   <TableHead>نام خودرو</TableHead>

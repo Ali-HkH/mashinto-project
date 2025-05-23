@@ -35,9 +35,9 @@ async function ReviewsPage() {
 }
 
 const DeleteReview = ({ reviewId }: { reviewId: string }) => {
-   const deleteReview = deleteReviewAction.bind(null, { reviewId });
    return (
-      <FormContainer action={deleteReview}>
+      <FormContainer action={deleteReviewAction}>
+         <input type="hidden" name="reviewId" value={reviewId} />
          <IconButton actionType="delete" />
       </FormContainer>
    );

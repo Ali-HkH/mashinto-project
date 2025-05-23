@@ -1,5 +1,6 @@
 import { IconType } from "react-icons";
 import {
+   NounMotor,
    NounSedan,
    NounRoadster,
    NounHatchback,
@@ -21,9 +22,14 @@ export type CategoryLabel =
    | "کروک"
    | "ون"
    | "پیکاپ"
-   | "کوپه";
+   | "کوپه"
+   | "موتور";
 
 export const categories: Category[] = [
+   {
+      label: "موتور",
+      icon: NounMotor,
+   },
    {
       label: "سدان",
       icon: NounSedan,

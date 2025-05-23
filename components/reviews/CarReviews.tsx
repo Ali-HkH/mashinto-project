@@ -19,7 +19,7 @@ async function CarReviews({ carId }: { carId: string }) {
                   name: firstName,
                   image: profileImage,
                };
-               return <ReviewCard key={review.id} reviewInfo={reviewInfo} />;
+               return <ReviewCard key={review.id} reviewInfo={reviewInfo} />
             })}
          </div>
       </div>

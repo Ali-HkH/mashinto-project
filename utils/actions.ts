@@ -33,7 +33,8 @@ const getAdminUser = async () => {
 const renderError = (error: unknown): { message: string } => {
    console.log(error);
    return {
-      message: error instanceof Error ? error.message : "خطایی روی داده است",
+      message:
+         error instanceof Error ? error.message : "خطایی ناشناس روی داده است",
    };
 };
 
@@ -350,8 +351,11 @@ export const fetchCarReviewsByUser = async () => {
    return reviews;
 };
 
-export const deleteReviewAction = async (prevState: { reviewId: string }) => {
-   const { reviewId } = prevState;
+export const deleteReviewAction = async (
+   prevState: any,
+   formData: FormData
+): Promise<{ message: string }> => {
+   const reviewId = formData.get("reviewId") as string;
    const user = await getAuthUser();
 
    try {
@@ -361,8 +365,6 @@ export const deleteReviewAction = async (prevState: { reviewId: string }) => {
             profileId: user.id,
          },
       });
-
-      revalidatePath("/reviews");
       return { message: "بازخورد شما حذف شد" };
    } catch (error) {
       return renderError(error);
@@ -462,8 +464,11 @@ export const fetchBookings = async () => {
    return bookings;
 };
 
-export async function deleteBookingAction(prevState: { bookingId: string }) {
-   const { bookingId } = prevState;
+export const deleteBookingAction = async (
+   prevState: any,
+   formData: FormData
+): Promise<{ message: string }> => {
+   const bookingId = formData.get("bookingId") as string;
    const user = await getAuthUser();
    try {
       await db.booking.delete({
@@ -472,12 +477,11 @@ export async function deleteBookingAction(prevState: { bookingId: string }) {
             profileId: user.id,
          },
       });
-      revalidatePath("/bookings");
       return { message: "کرایه شما لغو و حذف شد." };
    } catch (error) {
       return renderError(error);
    }
-}
+};
 
 export const fetchRentals = async () => {
    const user = await getAuthUser();
@@ -524,8 +528,11 @@ export const fetchRentals = async () => {
    return rentalsWithBookingSums;
 };
 
-export async function deleteRentalAction(prevState: { carId: string }) {
-   const { carId } = prevState;
+export const deleteRentalAction = async (
+   prevState: any,
+   formData: FormData
+): Promise<{ message: string }> => {
+   const carId = formData.get("carId") as string;
    const user = await getAuthUser();
 
    try {
@@ -535,13 +542,11 @@ export async function deleteRentalAction(prevState: { carId: string }) {
             profileId: user.id,
          },
       });
-
-      revalidatePath("/rentals");
       return { message: "اجاره شما با موفقیت حذف شد." };
    } catch (error) {
       return renderError(error);
    }
-}
+};
 
 export const fetchRentalDetails = async (carId: string) => {
    const user = await getAuthUser();

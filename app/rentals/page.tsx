@@ -74,9 +74,9 @@ async function RentalsPage() {
 }
 
 function DeleteRental({ carId }: { carId: string }) {
-   const deleteRental = deleteRentalAction.bind(null, { carId });
    return (
-      <FormContainer action={deleteRental}>
+      <FormContainer action={deleteRentalAction}>
+         <input type="hidden" name="carId" value={carId} />
          <IconButton actionType="delete" />
       </FormContainer>
    );

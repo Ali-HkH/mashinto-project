@@ -19,7 +19,7 @@ type ChartPropsType = {
 function Chart({ data }: ChartPropsType) {
   return (
     <section className='mt-24'>
-      <h1 className='text-4xl font-semibold text-center'>اجاره های ماهانه</h1>
+      <h1 className='text-4xl font-semibold text-center'>کرایه های ماهانه</h1>
       <ResponsiveContainer width='100%' height={300}>
         <BarChart data={data} margin={{ top: 50 }}>
           <CartesianGrid strokeDasharray='3 3' />

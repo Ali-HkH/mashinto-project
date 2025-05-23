@@ -8,17 +8,20 @@ import { useEffect } from "react";
 
 type BookingWrapperProps = {
    carId: string;
+   userId: string;
    price: number;
    bookings: Booking[];
 };
 export default function BookingWrapper({
    carId,
+   userId,
    price,
    bookings,
 }: BookingWrapperProps) {
    useEffect(() => {
       useRentalCar.setState({
          carId,
+         userId,
          price,
          bookings,
       });

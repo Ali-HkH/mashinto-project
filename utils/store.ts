@@ -4,6 +4,7 @@ import { DateRange } from 'react-day-picker';
 // Define the state's shape
 type RentalCarState = {
   carId: string;
+  userId?: string;
   price: number;
   bookings: Booking[];
   range: DateRange | undefined;
@@ -13,6 +14,7 @@ type RentalCarState = {
 export const useRentalCar = create<RentalCarState>(() => {
   return {
     carId: '',
+    userId: '',
     price: 0,
     bookings: [],
     range: undefined,
