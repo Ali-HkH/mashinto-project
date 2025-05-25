@@ -683,3 +683,87 @@ export const fetchChartsData = async () => {
    }, [] as Array<{ date: string; count: number }>);
    return bookingsPerMonth;
 };
+
+export const fetchAllRentals = async () => {
+   await getAdminUser();
+
+   const rentals = await db.car.findMany({
+      select: {
+         id: true,
+         company: true,
+         model: true,
+         price: true,
+         city: true,
+         color: true,
+         image: true,
+         profile: {
+            select: {
+               username: true,
+               email: true,
+            },
+         },
+      },
+   });
+
+   return rentals;
+};
+
+export const deleteUserRental = async (prevState: any, formData: FormData) => {
+   const rentalId = formData.get("rentalId") as string;
+   await getAdminUser();
+
+   try {
+      await db.car.delete({
+         where: {
+            id: rentalId,
+         },
+      });
+      return { message: "اجاره کاربر جاری با موفقیت حذف شد." };
+   } catch (error) {
+      return renderError(error);
+   }
+};
+
+export const fetchAllUsers = async () => {
+   await getAdminUser();
+
+   const users = await db.profile.findMany({
+      select: {
+         id: true,
+         clerkId: true,
+         firstName: true,
+         lastName: true,
+         username: true,
+         profileImage: true,
+         email: true,
+         createdAt: true,
+         _count: {
+            select: {
+               cars: true,
+               bookings: true,
+            },
+         },
+      },
+      orderBy: {
+         createdAt: "desc",
+      },
+   });
+   return users;
+};
+
+export const adminDeleteUser = async (prevState: any, formData: FormData) => {
+   await getAdminUser();
+   const userId = formData.get("userId") as string;
+
+   try {
+      await db.profile.delete({
+         where: {
+            id: userId,
+         },
+      });
+      return { message: "کاربر مدنظر با موفقیت حذف شد." };
+   } catch (error) {
+      return renderError(error);
+   }
+};
+

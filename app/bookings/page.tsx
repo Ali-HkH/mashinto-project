@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import EmptyList from "@/components/home/EmptyList";
 import Link from "next/link";
 
