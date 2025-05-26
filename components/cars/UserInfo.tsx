@@ -15,7 +15,8 @@ function UserInfo({ profile: { profileImage, firstName } }: UserInfoProps) {
             alt={firstName}
             width={50}
             height={50}
-            className="rounded-md w-14 h-14 object-cover"
+            loading="lazy"
+            className="rounded-md w-16 h-16 object-cover"
          />
          <div>
             <p>

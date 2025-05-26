@@ -28,10 +28,11 @@ function ImageInputContainer(props: ImageInputContainerProps) {
       {image ? (
         <Image
           src={image}
+          alt={name}
           width={100}
           height={100}
+          loading='lazy'
           className='rounded-md object-cover mb-4 w-24 h-24'
-          alt={name}
         />
       ) : (
         userIcon

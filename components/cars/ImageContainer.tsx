@@ -11,11 +11,11 @@ function ImageContainer({
     <section className='h-[300px] md:h-[500px] relative mt-8'>
       <Image
         src={mainImage}
-        fill
-        sizes='65vw'
         alt={name}
-        className='object-cover rounded-md'
+        fill
         priority
+        sizes='65vw'
+        className='object-cover rounded-md'
       />
     </section>
   );

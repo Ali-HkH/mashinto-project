@@ -30,10 +30,9 @@ function BookingCalendar() {
       selectedRange.some((date) => {
          if (unavailableDates[date]) {
             setRange(defaultSelected);
-            toast("پیغام", {
-               description:
-                  "برخی روزها از پیش کرایه شدند. لطفا تاریخی دیگر انتخاب کنید.",
-            });
+            toast(
+               "برخی روزها از پیش کرایه شدند. لطفا تاریخی دیگر انتخاب کنید."
+            );
             return true;
          }
          return false;

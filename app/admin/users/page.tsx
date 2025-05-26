@@ -12,6 +12,7 @@ import {
 import FormContainer from "@/components/form/FormContainer";
 import { IconButton } from "@/components/form/Buttons";
 import { adminDeleteUser, fetchAllUsers } from "@/utils/actions";
+import Image from "next/image";
 
 async function AllUsersPage() {
    const allUsers = await fetchAllUsers();
@@ -54,10 +55,13 @@ async function AllUsersPage() {
                   return (
                      <TableRow key={id}>
                         <TableCell>
-                           <img
+                           <Image
                               src={profileImage}
                               alt="car-image"
                               className="w-16 h-16 rounded-full object-cover"
+                              loading="lazy"
+                              width={64}
+                              height={64}
                            />
                         </TableCell>
                         <TableCell>

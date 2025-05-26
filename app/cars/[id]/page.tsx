@@ -40,7 +40,7 @@ async function PropertyDetailsPage({ params }: PageProps) {
    return (
       <section>
          <BreadCrumbs name={`${car.company} ${car.model}`} />
-         <header className="flex justify-between items-center mt-4">
+         <header className="flex flex-col items-start sm:flex-row justify-between sm:items-center gap-y-4 mt-4">
             <h1 className="text-4xl font-bold ">{car.tagline}</h1>
             <div className="flex items-center gap-x-4">
                <ShareButton
@@ -56,7 +56,7 @@ async function PropertyDetailsPage({ params }: PageProps) {
          />
          <section className="lg:grid lg:grid-cols-12 gap-x-12 mt-12">
             <div className="lg:col-span-8">
-               <div className="flex gap-x-4 items-center mb-3">
+               <div className="flex gap-x-4 items-center mb-4">
                   <h1 className="text-xl font-bold">{`${car.company} ${car.model}`}</h1>
                   <CarRating inPage carId={car.id} />
                </div>

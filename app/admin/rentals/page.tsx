@@ -1,6 +1,5 @@
 import EmptyList from "@/components/home/EmptyList";
 import Link from "next/link";
-
 import { formatCurrency } from "@/utils/formats";
 import {
    Table,
@@ -11,10 +10,10 @@ import {
    TableHeader,
    TableRow,
 } from "@/components/ui/table";
-
 import FormContainer from "@/components/form/FormContainer";
 import { IconButton } from "@/components/form/Buttons";
 import { deleteUserRental, fetchAllRentals } from "@/utils/actions";
+import Image from "next/image";
 
 async function AllRentalsPage() {
    const allRentals = await fetchAllRentals();
@@ -56,10 +55,13 @@ async function AllRentalsPage() {
                            </Link>
                         </TableCell>
                         <TableCell>
-                           <img
+                           <Image
                               src={image}
                               alt="car-image"
+                              loading="lazy"
                               className="w-16 h-14 rounded-md object-cover"
+                              width={64}
+                              height={56}
                            />
                         </TableCell>
                         <TableCell>{formatCurrency(price)}</TableCell>

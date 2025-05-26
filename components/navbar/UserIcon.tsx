@@ -1,4 +1,5 @@
 import { fetchProfileImage } from "@/utils/actions";
+import Image from "next/image";
 import { LuUser } from "react-icons/lu";
 
 async function UserIcon() {
@@ -6,11 +7,13 @@ async function UserIcon() {
 
    if (profileImage)
       return (
-         <img
+         <Image
             src={profileImage}
+            alt="profile-picture"
             className="rounded-full object-cover"
-            style={{ width: "24px", height: "24px" }}
-
+            loading="lazy"
+            width={24}
+            height={24}
          />
       );
    return (

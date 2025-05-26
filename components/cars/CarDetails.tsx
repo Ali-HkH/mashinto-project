@@ -12,10 +12,10 @@ function CarDetails({
 }: CarDetailsProps) {
   return (
     <p className='flex items-center gap-x-2.5 text-sm font-light '>
-      <span className="px-2 py-1 bg-primary text-white rounded">{`${seats} سرنشین`}</span>
-      <span className="px-2 py-1 bg-primary text-white rounded">{`${doors} در`}</span>
-      <span className="px-2 py-1 bg-primary text-white rounded">{`سوخت ${fuelType}`}</span>
-      <span className="px-2 py-1 bg-primary text-white rounded">{`${transmission}`}</span>
+      <span className="px-1 py-0.5 bg-primary text-white rounded">{`${seats} سرنشین`}</span>
+      <span className="px-1 py-0.5 bg-primary text-white rounded">{`${doors} در`}</span>
+      <span className="px-1 py-0.5 bg-primary text-white rounded">{`سوخت ${fuelType}`}</span>
+      <span className="px-1 py-0.5 bg-primary text-white rounded">{`${transmission}`}</span>
     </p>
   );
 }

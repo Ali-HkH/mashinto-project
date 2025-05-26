@@ -11,7 +11,7 @@ import {
   TwitterShareButton,
   EmailShareButton,
   LinkedinShareButton,
-  TwitterIcon,
+  XIcon,
   EmailIcon,
   LinkedinIcon,
 } from 'react-share';
@@ -40,7 +40,7 @@ function ShareButton({
         className='flex items-center gap-x-2 justify-center w-full'
       >
         <TwitterShareButton url={shareLink} title={name}>
-          <TwitterIcon size={32} round />
+          <XIcon size={32} round />
         </TwitterShareButton>
         <LinkedinShareButton url={shareLink} title={name}>
           <LinkedinIcon size={32} round />
