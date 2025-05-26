@@ -100,11 +100,11 @@ export const carSchema = z.object({
    kilometer: z.coerce.number().int().min(0, {
       message: "کیلومتر کارکرد باید عددی مثبت باشد",
    }),
-   seats: z.coerce.number().int().min(2, {
-      message: "ماشین حداقل 2 سرنشین هست",
+   seats: z.coerce.number().int().min(1, {
+      message: "1 سرنشین باید رانندگی کنه!",
    }),
-   doors: z.coerce.number().int().min(2, {
-      message: "ماشین حداقل 2 در دارد",
+   doors: z.coerce.number().int().min(0, {
+      message: "تعداد در منفی نمیتواند باشد.",
    }),
 });
 

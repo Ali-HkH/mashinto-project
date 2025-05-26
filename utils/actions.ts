@@ -646,11 +646,13 @@ export const fetchStats = async () => {
    const usersCount = await db.profile.count();
    const carsCount = await db.car.count();
    const bookingsCount = await db.booking.count();
+   const reviewsCount = await db.review.count();
 
    return {
       usersCount,
       carsCount,
       bookingsCount,
+      reviewsCount,
    };
 };
 
@@ -767,3 +769,43 @@ export const adminDeleteUser = async (prevState: any, formData: FormData) => {
    }
 };
 
+export const fetchAllReviews = async () => {
+   await getAdminUser();
+
+   const reviews = await db.review.findMany({
+      include: {
+         profile: {
+            select: {
+               username: true,
+               email: true,
+               profileImage: true,
+            },
+         },
+         car: {
+            select: {
+               id: true,
+               company: true,
+               model: true,
+            },
+         },
+      },
+      orderBy: {
+         createdAt: "desc",
+      },
+   });
+   return reviews;
+};
+
+export const deleteUserReview = async (prevState: any, formData: FormData) => {
+   await getAdminUser();
+   const reviewId = formData.get("reviewId") as string;
+
+   try {
+      await db.review.delete({
+         where: { id: reviewId },
+      });
+      return { message: "بازخورد کاربر موردنظر حذف شد." };
+   } catch (error) {
+      return renderError(error);
+   }
+};

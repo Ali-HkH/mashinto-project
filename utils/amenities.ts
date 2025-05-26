@@ -5,8 +5,10 @@ export type Amenity = {
 
 export const amenities: Amenity[] = [
    { name: "معاینه فنی", selected: false },
-   { name: "بنزین", selected: false },
+   { name: "بیمه", selected: false },
+   { name: "باک پر", selected: false },
    { name: "زاپاس", selected: false },
+   { name: "ترمز دیسکی", selected: false },
    { name: "ایربگ", selected: false },
    { name: "کنترل پایداری", selected: false },
    { name: "جی پی اس", selected: false },
