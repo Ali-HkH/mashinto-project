@@ -11,6 +11,7 @@
 - Add to favorite items 
 - User profile management
 - User reservation manage with calendar
+- User can submit review and rating
 - User manage rentals (delete, edit), reviews(delete), Hired vechile(delete) 
 - Admin can view site stats
 - Admin can manage users, reviews, rentals.
