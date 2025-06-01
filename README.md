@@ -16,3 +16,6 @@
 - User manage rentals (delete, edit), reviews(delete), Hired vechile(delete) 
 - Admin can view site stats
 - Admin can manage users, reviews, rentals.
+*********************
+### note: 
+IPs in Iran and Iranian users should use vpn just for login or register.
