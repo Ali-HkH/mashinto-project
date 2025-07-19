@@ -1,5 +1,4 @@
 import React from "react";
-import Logo from "../navbar/Logo";
 import FooterList from "./FooterList";
 import FooterSocials from "./FooterSocials";
 
