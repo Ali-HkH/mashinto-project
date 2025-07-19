@@ -7,7 +7,7 @@ import { Suspense } from "react";
 function Navbar() {
    return (
       <nav className="border-b">
-         <div className="container flex flex-col sm:flex-row  sm:justify-between sm:items-center flex-wrap gap-4 py-8">
+         <div className="container flex flex-col items-center md:flex-row  md:justify-between md:items-center flex-wrap gap-4 py-8">
             <Logo />
             <Suspense
                fallback={
@@ -16,7 +16,7 @@ function Navbar() {
             >
                <NavSearch />
             </Suspense>
-            <div className="flex gap-6 items-center ">
+            <div className="flex gap-6 items-center justify-between w-full md:w-auto">
                <DarkMode />
                <LinksDropdown />
             </div>

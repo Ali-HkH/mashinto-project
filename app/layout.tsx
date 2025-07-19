@@ -4,10 +4,12 @@ import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Providers from "./Providers";
 import { ClerkProvider } from "@clerk/nextjs";
+import { faLocalization } from "@/utils/clerkFaLocalization";
+import Footer from "@/components/footer/Footer";
 
 export const metadata: Metadata = {
-   title: "ماشینتو،  پلتفرم اجاره خودرو",
-   description: "دیگه پیاده نمیمونی، همسفر با خودروی دلخواهت شو!",
+   title: "ماشینتو",
+   description: "پلتفرم اجاره خودرو، دیگه پیاده نمیمونی، همسفر با خودروی دلخواهت شو!",
 };
 
 const dana = localFont({
@@ -37,12 +39,13 @@ export default function RootLayout({
    children: React.ReactNode;
 }>) {
    return (
-      <ClerkProvider>
+      <ClerkProvider localization={faLocalization}>
          <html lang="fa" dir="rtl" suppressHydrationWarning>
             <body className={dana.className}>
                <Providers>
                   <Navbar />
                   <main className="container py-10">{children}</main>
+                  <Footer />
                </Providers>
             </body>
          </html>

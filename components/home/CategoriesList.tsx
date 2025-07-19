@@ -14,7 +14,7 @@ function CategoriesList({
    return (
       <section>
          <ScrollArea className="py-6">
-            <div className="flex justify-center items-center flex-row-reverse gap-x-10">
+            <div className="flex justify-center items-center flex-row-reverse gap-x-2 md:gap-x-5 lg:gap-x-10">
                <Link href="/">
                   <article className="p-3 flex flex-col items-center w-[100px] cursor-pointer duration-300  hover:text-primary">
                      <BsFillCarFrontFill style={{ width: "35px", height: "35px" }}/>
